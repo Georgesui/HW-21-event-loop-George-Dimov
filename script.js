@@ -68,7 +68,7 @@ class renderPageFromMockServer {
 				.then((comment) => comment.json())
 				.then((comment) => {
 					let createdComment = document.createElement('p')
-					createdComment.innerHTML = `  ${comment.body}`
+					createdComment.innerHTML = ` ${comment.body}`
 					commentsAddedAfterRender.append(createdComment)
 				})
 		} catch {
@@ -92,9 +92,11 @@ setTimeout(function () {
 }, 0);
 
 new Promise(function (resolve) {
-setTimeout(() => {
-	resolve()
-}, 0)
-}).then(()=>{})
+	setTimeout(() => {
+		resolve()
+	}, 0)
+}).then(() => {
+	console.log(4)
+})
 
 console.log(5);
