@@ -79,3 +79,22 @@ class renderPageFromMockServer {
 
 const render = new renderPageFromMockServer(1)
 render.renderPostsFromMockServer()
+
+
+console.log(1);
+
+setTimeout(function () {
+	console.log(2);
+}, 100);
+
+setTimeout(function () {
+	console.log(3);
+}, 0);
+
+new Promise(function (resolve) {
+setTimeout(() => {
+	resolve()
+}, 0)
+}).then(()=>{})
+
+console.log(5);
