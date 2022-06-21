@@ -33,14 +33,12 @@ class renderPageFromMockServer {
 		}
 	}
 
-	async renderPostsFromMockServer(data) {
+	async renderPostsFromMockServer(posts, comments) {
 		try {
-			let ourPost = await this.getPosts();
-			titleOnPageFromMockServer.innerHTML += `<p>${ourPost.id}. ${ourPost.title}</p>`;
-			descriptionFromNumeratedPost.innerHTML += `<p>${ourPost.id}. ${ourPost.body}</p>`;
-			let ourComments = await this.getCommentsFromPosts();
+			titleOnPageFromMockServer.innerHTML += `<p>${posts.id}. ${posts.title}</p>`;
+			descriptionFromNumeratedPost.innerHTML += `<p>${posts.id}. ${posts.body}</p>`;
 			let ourList = '';
-			for (let comment of ourComments) {
+			for (let comment of comments) {
 				if (!comment) {
 					return
 				} else {
@@ -55,22 +53,28 @@ class renderPageFromMockServer {
 
 	async addNewCommentFromUser(data) {
 		try {
-			await fetch(`https://jsonplaceholder.typicode.com/comments`, {
-					method: 'POST',
-					body: JSON.stringify({
-						id: this.id,
-						body: data
-					}),
-					headers: {
-						'Content-type': 'application/json; charset=UTF-8',
-					},
-				})
-				.then((comment) => comment.json())
-				.then((comment) => {
+			let ourResponse = await fetch(`https://jsonplaceholder.typicode.com/comments`, {
+				method: 'POST',
+				body: JSON.stringify({
+					id: this.id,
+					body: data
+				}),
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+				},
+			});
+			if (ourResponse.ok) {
+				let correctComment = await ourResponse.json();
+
+				function addingNewComment(comment) {
 					let createdComment = document.createElement('p')
 					createdComment.innerHTML = ` ${comment.body}`
 					commentsAddedAfterRender.append(createdComment)
-				})
+				}
+				addingNewComment(correctComment)
+			} else {
+				console.warn('Error')
+			}
 		} catch {
 			console.warn('Error')
 		}
@@ -78,8 +82,14 @@ class renderPageFromMockServer {
 }
 
 const render = new renderPageFromMockServer(1)
-render.renderPostsFromMockServer()
 
+async function getResultOnPage() {
+	let post = await render.getPosts(1)
+	let comment = await render.getCommentsFromPosts(1)
+	let ourResult = await render.renderPostsFromMockServer(post, comment)
+}
+
+getResultOnPage()
 
 console.log(1);
 
